@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Wikipedia Search</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script>
+            $(function () {
+                $("#search_btn").on("click", function () {
+                    var search = "蛇";
+                    
+                    if ($("#search_text").val() != "") {
+                        search_word = $("#search_word").val();
+                    }
+
+                    var url = "https://ja.wikipedia.org/w/api.php";
+                    $.ajax({
+                        url: url,
+                        jsonp: "callback",
+                        dataType: "jsonp",
+                        data: {
+                            format: "json",
+                            action: "query",
+                            list: "search",
+                            srsearch: search_word
+                        }
+                    }).done(function (data) {
+                        var items = [];
+                        $.each(data.query.search, function (i, item) {
+                            items.push("<li id='" + i + "'><a href='http://ja.wikipedia.org/w/index.php?curid=" + item.pageid + "'>" + item.title + "</li>");
+                        });
+                        var html = "<ul>" + items.join("") + "</ul>";
+                        $("#out").html(html);
+                    });
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+        <input type="text" id="search_word" placeholder="検索ワード"><button id="search_btn">検索</button>
+        <hr>
+        <div id="out"></div>
+    </body>
+
+</html>
